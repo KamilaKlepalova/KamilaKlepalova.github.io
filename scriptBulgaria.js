@@ -136,11 +136,6 @@ function icuChart() {
     var xAxis = d3.axisBottom(x).tickSize([]).tickPadding(10);
     var yAxis = d3.axisLeft(y).tickFormat(formatPercent);
 
-    // var dataset = [{"year":"2014", "value": .07},
-    //                 {"year":"2015", "value": .13},
-    //                 {"year":"2016", "value": .56},
-    //                 {"year":"2017", "value": .95},
-    //                 {"year":"2018", "value": .81}];
     var dataset = [{ "year": "1-2021", "value": 0.094853371},
                     { "year": "2-2021", "value": 0.086693261},
                     { "year": "3-2021", "value": 0.080006657},
