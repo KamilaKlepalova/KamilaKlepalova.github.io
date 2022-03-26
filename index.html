@@ -1,422 +1,101 @@
 <!DOCTYPE html>
+<html>
 
 <head>
-  <script>
-    Object.defineProperty(navigator, 'userAgent', { get: function () { return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:97.0) Gecko/20100101 Firefox/97.4' }, configurable: true });
+    <script>
+        Object.defineProperty(navigator, 'userAgent', { get: function () { return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.2 Safari/605.7.17' }, configurable: true });
 
-    function shuffle(array) {
-      var currentIndex = array.length, tempValue, randomIndex;
-      while (0 !== currentIndex) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        tempValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = tempValue;
-      }
-      return array;
-    }
-    var tempPlugins = [];
-    if (window.navigator.plugins) {
-      if (window.navigator.plugins.length) {
-        var navigatorPluginsLength = window.navigator.plugins.length,
-          navigatorPlugins = window.navigator.plugins;
-        Object.setPrototypeOf(navigatorPlugins, Array.prototype);
-        navigatorPlugins.length = navigatorPluginsLength;
-        navigatorPlugins.forEach(function (plugin) {
-          var tempPlugin = {
-            name: plugin.name,
-            description: plugin.description,
-            filename: plugin.filename,
-            version: plugin.version,
-            length: plugin.length,
+        function shuffle(array) {
+            var currentIndex = array.length, tempValue, randomIndex;
+            while (0 !== currentIndex) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+                tempValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = tempValue;
+            }
+            return array;
+        }
+        var tempPlugins = [];
+        if (window.navigator.plugins) {
+            if (window.navigator.plugins.length) {
+                var navigatorPluginsLength = window.navigator.plugins.length,
+                    navigatorPlugins = window.navigator.plugins;
+                Object.setPrototypeOf(navigatorPlugins, Array.prototype);
+                navigatorPlugins.length = navigatorPluginsLength;
+                navigatorPlugins.forEach(function (plugin) {
+                    var tempPlugin = {
+                        name: plugin.name,
+                        description: plugin.description,
+                        filename: plugin.filename,
+                        version: plugin.version,
+                        length: plugin.length,
+                        item: function (index) { return this[index] || null; },
+                        namedItem: function (name) { return this[name] || null; }
+                    };
+                    var tempPluginsLength = plugin.length;
+                    Object.setPrototypeOf(plugin, Array.prototype);
+                    plugin.length = tempPluginsLength;
+                    plugin.forEach(function (mime, i) {
+                        tempPlugin[i] = tempPlugin[mime.type] = mime;
+                    });
+                    Object.setPrototypeOf(tempPlugin, Plugin.prototype);
+                    tempPlugins.push(tempPlugin);
+                });
+            }
+        }
+        var injectedPlugins = [{ 'filename': 'vtvideoplayback', 'name': 'VT VideoPlayback', 'description': 'VT video playback', '0': { 'type': 'application/vt-video', 'description': '', 'suffixes': '' } }, { 'filename': 'vtaudioplayback', 'name': 'VT AudioPlayback', 'description': 'VT audio playback', '0': { 'type': 'application/vt-audio', 'description': '', 'suffixes': '' } }, { 'filename': 'autoupdaterto', 'name': 'AutoUpdaterTO', 'description': 'Autou checking plugin', '0': { 'type': 'application/auto-updater-to', 'description': '', 'suffixes': '' } }];
+        if (injectedPlugins) {
+            injectedPlugins.forEach(function (plugin, v) {
+                var tempPlugin = {
+                    name: plugin.name,
+                    description: plugin.description,
+                    filename: plugin.filename,
+                    version: undefined,
+                    length: 1,
+                    item: function (index) { return this[index] || null; },
+                    namedItem: function (name) { return this[name] || null; }
+                };
+                var tempMime = {
+                    description: plugin[0].description,
+                    suffixes: plugin[0].suffixes,
+                    type: plugin[0].type,
+                    enabledPlugin: null
+                };
+                Object.setPrototypeOf(tempMime, MimeType.prototype);
+                tempPlugin[0] = tempPlugin[tempMime.type] = tempMime;
+                Object.setPrototypeOf(tempPlugin, Plugin.prototype);
+                tempPlugins.push(tempPlugin);
+            });
+        }
+        var resultPlugins = {
+            length: tempPlugins.length,
             item: function (index) { return this[index] || null; },
-            namedItem: function (name) { return this[name] || null; }
-          };
-          var tempPluginsLength = plugin.length;
-          Object.setPrototypeOf(plugin, Array.prototype);
-          plugin.length = tempPluginsLength;
-          plugin.forEach(function (mime, i) {
-            tempPlugin[i] = tempPlugin[mime.type] = mime;
-          });
-          Object.setPrototypeOf(tempPlugin, Plugin.prototype);
-          tempPlugins.push(tempPlugin);
+            namedItem: function (name) { return this[name] || null; },
+            refresh: function () { }
+        };
+        tempPlugins = shuffle(tempPlugins);
+        tempPlugins.forEach(function (plugin, i) {
+            resultPlugins[i] = resultPlugins[plugin.name] = plugin;
         });
-      }
-    }
-    var injectedPlugins = [{ 'filename': 'vtvideoplayback', 'name': 'VT VideoPlayback', 'description': 'VT video playback', '0': { 'type': 'application/vt-video', 'description': '', 'suffixes': '' } }, { 'filename': 'emailchecker', 'name': 'EmailChecker', 'description': 'Email checking plugin', '0': { 'type': 'application/email-checker', 'description': '', 'suffixes': '' } }, { 'filename': 'autoupdaterto', 'name': 'AutoUpdaterTO', 'description': 'Autou checking plugin', '0': { 'type': 'application/auto-updater-to', 'description': '', 'suffixes': '' } }];
-    if (injectedPlugins) {
-      injectedPlugins.forEach(function (plugin, v) {
-        var tempPlugin = {
-          name: plugin.name,
-          description: plugin.description,
-          filename: plugin.filename,
-          version: undefined,
-          length: 1,
-          item: function (index) { return this[index] || null; },
-          namedItem: function (name) { return this[name] || null; }
-        };
-        var tempMime = {
-          description: plugin[0].description,
-          suffixes: plugin[0].suffixes,
-          type: plugin[0].type,
-          enabledPlugin: null
-        };
-        Object.setPrototypeOf(tempMime, MimeType.prototype);
-        tempPlugin[0] = tempPlugin[tempMime.type] = tempMime;
-        Object.setPrototypeOf(tempPlugin, Plugin.prototype);
-        tempPlugins.push(tempPlugin);
-      });
-    }
-    var resultPlugins = {
-      length: tempPlugins.length,
-      item: function (index) { return this[index] || null; },
-      namedItem: function (name) { return this[name] || null; },
-      refresh: function () { }
-    };
-    tempPlugins = shuffle(tempPlugins);
-    tempPlugins.forEach(function (plugin, i) {
-      resultPlugins[i] = resultPlugins[plugin.name] = plugin;
-    });
-    Object.setPrototypeOf(resultPlugins, PluginArray.prototype);
-    Object.defineProperty(window.navigator, 'plugins', {
-      get: function () {
-        return resultPlugins;
-      },
-      enumerable: true,
-      configurable: true
-    });
-  </script>
-  <meta charset="utf-8">
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script defer src="scriptBulgaria.js"></script>
-  <style>
-    text {
-      font-size: 16px;
-      font-family: Open Sans, sans-serif;
-    }
+        Object.setPrototypeOf(resultPlugins, PluginArray.prototype);
+        Object.defineProperty(window.navigator, 'plugins', {
+            get: function () {
+                return resultPlugins;
+            },
+            enumerable: true,
+            configurable: true
+        });
+    </script>
+    <meta charset="utf-8">
+    <title>Animated Bar Chart</title>
+    <link rel="stylesheet" href="css/style.css">
+    </link>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script defer src="scriptBulgaria.js"></script>
 
-    text.title {
-      font-size: 24px;
-      font-weight: 500;
-    }
-
-    text.subTitle {
-      font-weight: 500;
-      fill: #777777;
-    }
-
-    text.caption {
-      font-weight: 400;
-      font-size: 14px;
-      fill: #777777;
-    }
-
-    text.label {
-      font-weight: 600;
-    }
-
-    text.valueLabel {
-      font-weight: 300;
-    }
-
-    text.yearText {
-      font-size: 64px;
-      font-weight: 700;
-      opacity: 0.25;
-    }
-
-    .tick text {
-      fill: #777777;
-    }
-
-    .xAxis .tick:nth-child(2) text {
-      text-anchor: start;
-    }
-
-    .tick line {
-      shape-rendering: CrispEdges;
-      stroke: #dddddd;
-    }
-
-    .tick line.origin {
-      stroke: #aaaaaa;
-    }
-
-    path.domain {
-      display: none;
-    }
-  </style>
-</head>
 
 <body>
-  <script>
-    var svg = d3.select("body").append("svg")
-      .attr("width", 960)
-      .attr("height", 600);
-
-    // var visCircle = d3.select("body").append("svg").append("circle")
-    //   .attr("cy", 50)
-    //   .attr("cx", 200)
-    //   .style("fill", "black")
-    //   .attr("r", 50);
-
-
-    var tickDuration = 100;
-
-    var top_n = 12;
-    var height = 600;
-    var width = 960;
-
-    const margin = {
-      top: 80,
-      right: 0,
-      bottom: 5,
-      left: 0
-    };
-
-    let barPadding = (height - (margin.bottom + margin.top)) / (top_n * 5);
-
-    let title = svg.append('text')
-      .attr('class', 'title')
-      .attr('y', 24)
-      .html('1 year of COVID-19 vaccination rates in Europe');
-
-    let subTitle = svg.append("text")
-      .attr("class", "subTitle")
-      .attr("y", 55)
-      .html("% population vaccinated");
-
-    let caption = svg.append('text')
-      .attr('class', 'caption')
-      .attr('x', width)
-      .attr('y', height - 5)
-      .style('text-anchor', 'end')
-      .html('');
-
-    let year = 2021.099;
-
-
-    //d3.csv('brand_values.csv').then(function (data) {
-    //d3.csv('covid-bar-race-complex.csv').then(function (data) {
-    d3.csv('covid-bar-race-vacc-percentage.csv').then(function (data) {
-      //if (error) throw error;
-
-      data.forEach(d => {
-        d.value = +d.value,
-          d.lastValue = +d.lastValue,
-          d.value = isNaN(d.value) ? 0 : d.value,
-          d.year = +d.year,
-          d.colour = d3.hsl(Math.random() * 360, 0.75, 0.75)
-      });
-
-
-      let yearSlice = data.filter(d => d.year == year && !isNaN(d.value))
-        .sort((a, b) => b.value - a.value)
-        .slice(0, top_n);
-
-      yearSlice.forEach((d, i) => d.rank = i);
-
-
-      let x = d3.scaleLinear()
-        .domain([0, d3.max(yearSlice, d => d.value)])
-        .range([margin.left, width - margin.right - 100]);
-
-      let y = d3.scaleLinear()
-        .domain([top_n, 0])
-        .range([height - margin.bottom, margin.top]);
-
-      let xAxis = d3.axisTop()
-        .scale(x)
-        .ticks(width > 500 ? 5 : 2)
-        .tickSize(-(height - margin.top - margin.bottom))
-        .tickFormat(d => d3.format(',')(d));
-
-      svg.append('g')
-        .attr('class', 'axis xAxis')
-        .attr('transform', `translate(0, ${margin.top})`)
-        .call(xAxis)
-        .selectAll('.tick line')
-        .classed('origin', d => d == 0);
-
-      svg.selectAll('rect.bar')
-        .data(yearSlice, d => d.name)
-        .enter()
-        .append('rect')
-        .attr('class', 'bar')
-        .attr('x', x(0) + 1)
-        .attr('width', d => x(d.value) - x(0) - 1)
-        .attr('y', d => y(d.rank) + 5)
-        .attr('height', y(1) - y(0) - barPadding)
-        .style('fill', d => d.colour);
-
-      svg.selectAll('text.label')
-        .data(yearSlice, d => d.name)
-        .enter()
-        .append('text')
-        .attr('class', 'label')
-        .attr('x', d => x(d.value) - 8)
-        .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1)
-        .style('text-anchor', 'end')
-        .html(d => d.name);
-
-      svg.selectAll('text.valueLabel')
-        .data(yearSlice, d => d.name)
-        .enter()
-        .append('text')
-        .attr('class', 'valueLabel')
-        .attr('x', d => x(d.value) + 5)
-        .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1)
-        .text(d => d3.format(',.0f')(d.lastValue));
-
-      let yearText = svg.append('text')
-        .attr('class', 'yearText')
-        .attr('x', width - margin.right)
-        .attr('y', height - 25)
-        .style('text-anchor', 'end')
-        .html(~~year)
-        .call(halo, 10);
-
-      let ticker = d3.interval(e => {
-
-        yearSlice = data.filter(d => d.year == year && !isNaN(d.value))
-          .sort((a, b) => b.value - a.value)
-          .slice(0, top_n);
-
-        yearSlice.forEach((d, i) => d.rank = i);
-
-        //console.log('IntervalYear: ', yearSlice);
-
-        x.domain([0, d3.max(yearSlice, d => d.value)]);
-
-        svg.select('.xAxis')
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .call(xAxis);
-
-        let bars = svg.selectAll('.bar').data(yearSlice, d => d.name);
-
-        bars
-          .enter()
-          .append('rect')
-          .attr('class', d => `bar ${d.name.replace(/\s/g, '_')}`)
-          .attr('x', x(0) + 1)
-          .attr('width', d => x(d.value) - x(0) - 1)
-          .attr('y', d => y(top_n + 1) + 5)
-          .attr('height', y(1) - y(0) - barPadding)
-          .style('fill', d => d.colour)
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('y', d => y(d.rank) + 5);
-
-        bars
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('width', d => x(d.value) - x(0) - 1)
-          .attr('y', d => y(d.rank) + 5);
-
-        bars
-          .exit()
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('width', d => x(d.value) - x(0) - 1)
-          .attr('y', d => y(top_n + 1) + 5)
-          .remove();
-
-        let labels = svg.selectAll('.label')
-          .data(yearSlice, d => d.name);
-
-        labels
-          .enter()
-          .append('text')
-          .attr('class', 'label')
-          .attr('x', d => x(d.value) - 8)
-          .attr('y', d => y(top_n + 1) + 5 + ((y(1) - y(0)) / 2))
-          .style('text-anchor', 'end')
-          .html(d => d.name)
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1);
-
-
-        labels
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('x', d => x(d.value) - 8)
-          .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1);
-
-        labels
-          .exit()
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('x', d => x(d.value) - 8)
-          .attr('y', d => y(top_n + 1) + 5)
-          .remove();
-
-
-
-        let valueLabels = svg.selectAll('.valueLabel').data(yearSlice, d => d.name);
-
-        valueLabels
-          .enter()
-          .append('text')
-          .attr('class', 'valueLabel')
-          .attr('x', d => x(d.value) + 5)
-          .attr('y', d => y(top_n + 1) + 5)
-          .text(d => d3.format('.3f')(d.lastValue))
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1);
-
-        valueLabels
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('x', d => x(d.value) + 5)
-          .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1)
-          .tween("text", function (d) {
-            let i = d3.interpolateRound(d.lastValue, d.value);
-            return function (t) {
-              this.textContent = d3.format(',')(i(t));
-            };
-          });
-
-
-        valueLabels
-          .exit()
-          .transition()
-          .duration(tickDuration)
-          .ease(d3.easeLinear)
-          .attr('x', d => x(d.value) + 5)
-          .attr('y', d => y(top_n + 1) + 5)
-          .remove();
-
-        yearText.html(~~year);
-        dayNo = ((~~((year - 2021) * 1000)) - 98);
-        dT = new Date(~~year, 0);
-        caption.html(new Date(dT.setDate(dayNo)).toLocaleDateString());
-
-        if (year == 2021.464) ticker.stop();
-        year = d3.format('.3f')((+year) + 0.001);
-      }, tickDuration);
-
-    });
-
-    const halo = function (text, strokeWidth) {
-      text.select(function () { return this.parentNode.insertBefore(this.cloneNode(true), this); })
-        .style('fill', '#ffffff')
-        .style('stroke', '#ffffff')
-        .style('stroke-width', strokeWidth)
-        .style('stroke-linejoin', 'round')
-        .style('opacity', 1);
-
-    }
-  </script>
 </body>
+
+</html>
