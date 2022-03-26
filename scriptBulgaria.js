@@ -1,4 +1,4 @@
-function vaccChart() {
+function vaccChartBulgaria() {
     var margin = { top: 40, right: 150, bottom: 100, left: 60 },
         width = 460 - margin.left - margin.right + 50,
         height = 320 - margin.top - margin.bottom;
@@ -9,11 +9,14 @@ function vaccChart() {
 
     var formatPercent = d3.format(".0%");
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#chartBulgaria1").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    d3.selectAll("div")
+        .attr("align","left");
 
     let title = svg.append('text')
         .attr('class', 'title')
@@ -104,7 +107,7 @@ function vaccChart() {
         .attr("dy", "-.7em");
 }
 
-function icuChart() {
+function icuChartBulgaria() {
     var margin = { top: 40, right: 150, bottom: 100, left: 50 },
         width = 460 - margin.left - margin.right + 50,
         height = 320 - margin.top - margin.bottom;
@@ -115,7 +118,7 @@ function icuChart() {
 
     var formatPercent = d3.format(".0%");
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#chartBulgaria2").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -211,7 +214,7 @@ function icuChart() {
 
 }
 
-function deathChart() {
+function deathChartBulgaria() {
     var margin = { top: 40, right: 150, bottom: 100, left: 60 },
         width = 460 - margin.left - margin.right + 50,
         height = 320 - margin.top - margin.bottom;
@@ -222,7 +225,7 @@ function deathChart() {
 
     var formatPercent = d3.format(".0%");
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#chartBulgaria3").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -317,6 +320,6 @@ function deathChart() {
         .attr("dy", "-.7em");
 }
 
-icuChart();
-vaccChart();
-deathChart();
+icuChartBulgaria();
+vaccChartBulgaria();
+deathChartBulgaria();
