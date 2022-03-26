@@ -639,6 +639,325 @@ function deathChartFrance() {
         .attr("dy", "-.7em");
 }
 
+function vaccChartGermany() {
+    var margin = { top: 40, right: 150, bottom: 100, left: 60 },
+        width = 460 - margin.left - margin.right + 50,
+        height = 320 - margin.top - margin.bottom;
+
+    var greyColor = "#898989";
+    var barColor = d3.interpolateInferno(0.4);
+    var highlightColor = d3.interpolateInferno(0.3);
+
+    var formatPercent = d3.format(".0%");
+
+    var svg = d3.select("#chartGermany1").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    let title = svg.append('text')
+        .attr('class', 'title')
+        .attr('y', 14)
+        .attr("transform", "translate(" + margin.left + "," + -30 + ")")
+        .html('Germany - percentage of fully vaccinated population');
+
+    var x = d3.scaleBand()
+        .range([0, width * 1.5])
+        .padding(0.4);
+    var y = d3.scaleLinear()
+        .range([height, 0]);
+
+    var xAxis = d3.axisBottom(x).tickSize([]).tickPadding(10);
+    var yAxis = d3.axisLeft(y).tickFormat(formatPercent);
+
+    var dataset = [{ "year": "1-2021", "value": 0.0071963},
+                    { "year": "2-2021", "value": 0.02614884},
+                    { "year": "3-2021", "value": 0.050711599},
+                    { "year": "4-2021", "value": 0.078272588},
+                    { "year": "5-2021", "value": 0.181371759},
+                    { "year": "6-2021", "value": 0.371723622},
+                    { "year": "7-2021", "value": 0.520766528},
+                    { "year": "8-2021", "value": 0.602831443},
+                    { "year": "9-2021", "value": 0.641367758},
+                    { "year": "10-2021", "value": 0.662253422},
+                    { "year": "11-2021", "value": 0.681320609},
+                    { "year": "12-2021", "value": 0.70643371},
+                    { "year": "1-2022", "value": 0.734190825}]
+
+    x.domain(dataset.map(d => { return d.year; }));
+    // y.domain([0, d3.max(dataset,  d => { return d.value; })]);
+    y.domain([0, 1]);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    svg.selectAll(".bar")
+        .data(dataset)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .style("display", d => { return d.value === null ? "none" : null; })
+        .style("fill", d => {
+            return d.value === d3.max(dataset, d => { return d.value; })
+                ? highlightColor : barColor
+        })
+        .attr("x", d => { return x(d.year); })
+        .attr("width", x.bandwidth())
+        .attr("y", d => { return height; })
+        .attr("height", 0)
+        .transition()
+        .duration(750)
+        .delay(function (d, i) {
+            return i * 150;
+        })
+        .attr("y", d => { return y(d.value); })
+        .attr("height", d => { return height - y(d.value); });
+
+    svg.selectAll(".label")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .style("display", d => { return d.value === null ? "none" : null; })
+        .attr("x", (d => { return x(d.year) + (x.bandwidth() / 2) - 8; }))
+        .style("fill", d => {
+            return d.value === d3.max(dataset, d => { return d.value; })
+                ? highlightColor : greyColor
+        })
+        .attr("y", d => { return height; })
+        .attr("height", 0)
+        .transition()
+        .duration(750)
+        .delay((d, i) => { return i * 150; })
+        .text(d => { return formatPercent(d.value); })
+        .attr("y", d => { return y(d.value) + .1; })
+        .attr("dy", "-.7em");
+}
+
+function icuChartGermany() {
+    var margin = { top: 40, right: 150, bottom: 100, left: 50 },
+        width = 460 - margin.left - margin.right + 50,
+        height = 320 - margin.top - margin.bottom;
+
+    var greyColor = "#898989";
+    var barColor = d3.interpolateInferno(0.4);
+    var highlightColor = d3.interpolateInferno(0.3);
+
+    var formatPercent = d3.format(".0%");
+
+    var svg = d3.select("#chartGermany2").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    let title = svg.append('text')
+        .attr('class', 'title')
+        .attr('y', 14)
+        .attr("transform", "translate(" + margin.left + "," + -30 + ")")
+        .html('Germany - percentage of icu in hospital admissions');
+
+    var x = d3.scaleBand()
+        .range([0, width * 1.5])
+        .padding(0.4);
+    var y = d3.scaleLinear()
+        .range([height, 0]);
+
+    var xAxis = d3.axisBottom(x).tickSize([]).tickPadding(10);
+    var yAxis = d3.axisLeft(y).tickFormat(formatPercent);
+
+    var dataset = [{ "year": "1-2021", "value": 0},
+                    { "year": "2-2021", "value": 0},
+                    { "year": "3-2021", "value": 0},
+                    { "year": "4-2021", "value": 0},
+                    { "year": "5-2021", "value": 0},
+                    { "year": "6-2021", "value": 0},
+                    { "year": "7-2021", "value": 0},
+                    { "year": "8-2021", "value": 0},
+                    { "year": "9-2021", "value": 0},
+                    { "year": "10-2021", "value": 0},
+                    { "year": "11-2021", "value": 0},
+                    { "year": "12-2021", "value": 0},
+                    { "year": "1-2022", "value": 0}]
+
+    x.domain(dataset.map(d => { return d.year; }));
+    // y.domain([0, d3.max(dataset,  d => { return d.value; })]);
+    y.domain([0, 1]);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    svg.selectAll(".bar")
+        .data(dataset)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .style("display", d => { return d.value === null ? "none" : null; })
+        .style("fill", d => {
+            return d.value === d3.max(dataset, d => { return d.value; })
+                ? highlightColor : barColor
+        })
+        .attr("x", d => { return x(d.year); })
+        .attr("width", x.bandwidth())
+        .attr("y", d => { return height; })
+        .attr("height", 0)
+        .transition()
+        .duration(750)
+        .delay(function (d, i) {
+            return i * 150;
+        })
+        .attr("y", d => { return y(d.value); })
+        .attr("height", d => { return height - y(d.value); });
+
+    svg.selectAll(".label")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .style("display", d => { return d.value === null ? "none" : null; })
+        .attr("x", (d => { return x(d.year) + (x.bandwidth() / 2) - 8; }))
+        .style("fill", d => {
+            return d.value === d3.max(dataset, d => { return d.value; })
+                ? highlightColor : greyColor
+        })
+        .attr("y", d => { return height; })
+        .attr("height", 0)
+        .transition()
+        .duration(750)
+        .delay((d, i) => { return i * 150; })
+        .text(d => { return formatPercent(d.value); })
+        .attr("y", d => { return y(d.value) + .1; })
+        .attr("dy", "-.7em");
+
+}
+
+function deathChartGermany() {
+    var margin = { top: 40, right: 150, bottom: 100, left: 60 },
+        width = 460 - margin.left - margin.right + 50,
+        height = 320 - margin.top - margin.bottom;
+
+    var greyColor = "#898989";
+    var barColor = d3.interpolateInferno(0.4);
+    var highlightColor = d3.interpolateInferno(0.3);
+
+    var formatPercent = d3.format(".0%");
+
+    var svg = d3.select("#chartGermany3").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    let title = svg.append('text')
+        .attr('class', 'title')
+        .attr('y', 14)
+        .attr("transform", "translate(" + margin.left + "," + -30 + ")")
+        .html('Germany - percentage of deaths in infected');
+
+    var x = d3.scaleBand()
+        .range([0, width * 1.5])
+        .padding(0.4);
+    var y = d3.scaleLinear()
+        .range([height, 0]);
+
+    var xAxis = d3.axisBottom(x).tickSize([]).tickPadding(10);
+    var yAxis = d3.axisLeft(y).tickFormat(formatPercent);
+
+    var dataset = [{ "year": "1-2021", "value": 0.048820838},
+                    { "year": "2-2021", "value": 0.057822433},
+                    { "year": "3-2021", "value": 0.016364602},
+                    { "year": "4-2021", "value": 0.011585823},
+                    { "year": "5-2021", "value": 0.019342414},
+                    { "year": "6-2021", "value": 0.050643851},
+                    { "year": "7-2021", "value": 0.017794121},
+                    { "year": "8-2021", "value": 0.002979514},
+                    { "year": "9-2021", "value": 0.005421537},
+                    { "year": "10-2021", "value": 0.005486372},
+                    { "year": "11-2021", "value": 0.004605482},
+                    { "year": "12-2021", "value": 0.008126041},
+                    { "year": "1-2022", "value": 0.002071831}]
+
+    x.domain(dataset.map(d => { return d.year; }));
+    // y.domain([0, d3.max(dataset,  d => { return d.value; })]);
+    y.domain([0, 0.15]);
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    svg.selectAll(".bar")
+        .data(dataset)
+        .enter().append("rect")
+        .attr("class", "bar")
+        .style("display", d => { return d.value === null ? "none" : null; })
+        .style("fill", d => {
+            return d.value === d3.max(dataset, d => { return d.value; })
+                ? highlightColor : barColor
+        })
+        .attr("x", d => { return x(d.year); })
+        .attr("width", x.bandwidth())
+        .attr("y", d => { return height; })
+        .attr("height", 0)
+        .transition()
+        .duration(750)
+        .delay(function (d, i) {
+            return i * 150;
+        })
+        .attr("y", d => { return y(d.value); })
+        .attr("height", d => { return height - y(d.value); });
+
+    svg.selectAll(".label")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("class", "label")
+        .style("display", d => { return d.value === null ? "none" : null; })
+        .attr("x", (d => { return x(d.year) + (x.bandwidth() / 2) - 8; }))
+        .style("fill", d => {
+            return d.value === d3.max(dataset, d => { return d.value; })
+                ? highlightColor : greyColor
+        })
+        .attr("y", d => { return height; })
+        .attr("height", 0)
+        .transition()
+        .duration(750)
+        .delay((d, i) => { return i * 150; })
+        .text(d => { return formatPercent(d.value); })
+        .attr("y", d => { return y(d.value) + .1; })
+        .attr("dy", "-.7em");
+}
+
 icuChartBulgaria();
 vaccChartBulgaria();
 deathChartBulgaria();
@@ -646,3 +965,7 @@ deathChartBulgaria();
 icuChartFrance();
 vaccChartFrance();
 deathChartFrance();
+
+icuChartGermany();
+vaccChartGermany();
+deathChartGermany();
