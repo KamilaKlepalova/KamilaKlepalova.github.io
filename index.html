@@ -89,16 +89,80 @@
     </script>
     <meta charset="utf-8">
     <title>Animated Bar Chart</title>
-    <!--<link rel="stylesheet" href="style.css">-->
+    <!--<link rel="stylesheet" href="css/style.css">-->
+    </link>
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script defer src="myscript.js"></script>
+    <style>
+        body {
+           font-family: Open Sans, sans-serif;
+        }
 
+        text.title {
+          font-size: 16px;
+          font-weight: 500;
+        }
+    
+        text.subTitle {
+          font-weight: 500;
+          fill: #777777;
+        }
+    
+        text.caption {
+          font-weight: 400;
+          font-size: 14px;
+          fill: #777777;
+        }
+    
+        text.label {
+          font-weight: 600;
+        }
+    
+        text.valueLabel {
+          font-weight: 300;
+        }
+    
+        text.yearText {
+          font-size: 64px;
+          font-weight: 700;
+          opacity: 0.25;
+        }
+    
+        .tick text {
+          fill: #777777;
+        } 
+    
+        .xAxis .tick:nth-child(2) text {
+          text-anchor: start;
+        }
+    
+        .tick line {
+          shape-rendering: CrispEdges;
+          stroke: #cacaca;
+        }
+    
+        .tick line.origin {
+          stroke: #aaaaaa;
+        }
+    
+        #barChartRace path.domain {
+          display: none;
+        }
+      </style>
+    <script defer src="js/myscript.js"></script>
+</head>
 
 <body>
     <h1>Kamila Klepalova - Dissertation Project</h1>
-    <h3>Storytelling of Vaccination Rates for COVID-19 pandemic</h3>
+    <h3 style="font-size: 18px;">Storytelling of Vaccination Rates for COVID-19 pandemic</h3>
+    <br>
+    <h2>Bar Chart Race</h2>
+    <p style="font-size: 18px;">Below bar chart race is a visualization of vaccination rates in Europe. 
+    <br>Feel free to comment on what you like or do not like about it.</p>
+    <div id="barChartRace"></div>
+    <br>
+    <br>
     <h4 style="color: red;">Instructions:</h4>
-    <p style="color:red">Scroll down through the graphs. Observe any trends or relationships between the graphs for each country.<p>
+    <p style="color:red;">Scroll down through the graphs. Observe any trends or relationships between the graphs for each country.<p>
     <p>Note:<br> 
         The <b>first</b> chart shows the overall <b>vaccination trend</b> in the country.<br> 
         The <b>second</b> chart shows the percentage of <b>intensive care units (icu) patients</b> out of all hospitalized patients.<br>
